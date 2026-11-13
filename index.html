@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#090b18">
-<title>FVGSTORE💎 — V84</title>
+<title>FVGSTORE💎 — V85</title>
 <style>
 :root{--bg:#090b18;--panel:#171d39;--panel2:#202849;--text:#f6f7ff;--muted:#aab3d0;--purple:#8b5cf6;--blue:#38bdf8;--green:#34d399;--line:#ffffff18;--radius:19px}
 *{box-sizing:border-box}
@@ -1011,5 +1011,60 @@ body.fvg83-admin-open #fvgChatPanel{display:flex!important;z-index:2147483647!im
  setInterval(check,10000);setTimeout(check,1500);
 })();
 </script>
+
+<!-- V85: isolated admin inbox, independent of legacy chat layers. -->
+<style>
+#fvg85AdminOverlay{position:fixed;inset:0;z-index:2147483647;background:#080313ed;display:none;align-items:center;justify-content:center;padding:12px;color:#f7efff;font-family:system-ui,Arial,sans-serif}
+#fvg85AdminOverlay.open{display:flex}
+#fvg85AdminBox{width:min(920px,100%);height:min(760px,94dvh);display:flex;flex-direction:column;background:#1b1030;border:1px solid #a873e7;border-radius:19px;overflow:hidden;box-shadow:0 15px 60px #000b}
+#fvg85AdminTop{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px;background:linear-gradient(110deg,#5721ac,#9835da)}
+#fvg85AdminTop strong{font-size:17px}#fvg85AdminTop button{background:#ffffff25;color:#fff;border:1px solid #ffffff55;border-radius:10px;padding:7px 12px}
+#fvg85AdminStatus{font-size:12px;color:#e8d5ff;padding:9px 14px;background:#29183e;min-height:36px}
+#fvg85AdminMain{flex:1;min-height:0;display:grid;grid-template-columns:minmax(145px,32%) 1fr}
+#fvg85AdminUsers{overflow:auto;border-right:1px solid #76529a;padding:9px;display:flex;flex-direction:column;gap:6px}
+#fvg85AdminUsers button{border:1px solid #725194;border-radius:10px;background:#35204d;color:#fff;padding:10px;text-align:left;overflow-wrap:anywhere;font-size:12px}
+#fvg85AdminUsers button.selected{background:#6934ae;border-color:#d1a8ff}
+#fvg85AdminRight{display:flex;flex-direction:column;min-width:0;min-height:0}
+#fvg85AdminMessages{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.fvg85Bubble{max-width:88%;width:max-content;padding:10px 12px;background:#35234d;border-radius:12px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px}
+.fvg85Bubble.admin{align-self:flex-end;background:#7037b6}.fvg85Bubble small{display:block;opacity:.75;margin-top:5px;font-size:10px}
+#fvg85AdminForm{display:flex;gap:8px;padding:10px;border-top:1px solid #76529a}#fvg85AdminInput{flex:1;min-width:0;max-height:110px;resize:vertical;background:#10091d;color:white;border:1px solid #8255ad;border-radius:10px;padding:10px}
+#fvg85AdminForm button{background:#8b42d7;color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:700}
+#fvg85AdminForm button:disabled{opacity:.5}
+@media(max-width:550px){#fvg85AdminMain{grid-template-columns:35% 65%}#fvg85AdminUsers button{font-size:11px;padding:8px}#fvg85AdminTop strong{font-size:15px}}
+</style>
+<div id="fvg85AdminOverlay" role="dialog" aria-modal="true" aria-label="Panel Chat Admin FVGSTORE">
+ <div id="fvg85AdminBox">
+  <div id="fvg85AdminTop"><strong>💎 Panel Chat Admin FVGSTORE</strong><button type="button" id="fvg85AdminClose">✕ Tutup</button></div>
+  <div id="fvg85AdminStatus" role="status">Menyiapkan panel admin...</div>
+  <div id="fvg85AdminMain"><div id="fvg85AdminUsers" aria-label="Daftar pelanggan"></div><div id="fvg85AdminRight"><div id="fvg85AdminMessages" aria-live="polite"></div><form id="fvg85AdminForm"><textarea id="fvg85AdminInput" maxlength="2000" rows="2" placeholder="Balas pesan pelanggan..."></textarea><button type="submit" id="fvg85AdminSend">Kirim</button></form></div></div>
+ </div>
+</div>
+<script>
+(function(){
+ 'use strict';
+ const $=id=>document.getElementById(id), overlay=$('fvg85AdminOverlay'),entry=$('fvg83AdminEntry'),status=$('fvg85AdminStatus'),users=$('fvg85AdminUsers'),messages=$('fvg85AdminMessages'),form=$('fvg85AdminForm'),input=$('fvg85AdminInput'),send=$('fvg85AdminSend');
+ let selected=null,poll=null,busy=false,authorized=false;
+ function note(t){status.textContent=t}
+ function validSession(){return typeof fvgAuthSession!=='undefined'&&!!fvgAuthSession?.user&&typeof fvgAuthKey==='function'&&!!fvgAuthKey()}
+ async function ensureAdmin(){if(!validSession())throw Error('Silakan login dan hubungkan Supabase terlebih dahulu.');const r=await fvgChatApi('fvg_chat_admins?select=user_id&user_id=eq.'+encodeURIComponent(fvgAuthSession.user.id));if(!Array.isArray(r)||!r.length)throw Error('Akun ini belum memiliki akses admin.');authorized=true}
+ function close(){overlay.classList.remove('open');document.body.style.overflow='';clearInterval(poll);poll=null}
+ async function open(){overlay.classList.add('open');document.body.style.overflow='hidden';note('Memeriksa izin admin...');try{await ensureAdmin();await refresh();if(!poll)poll=setInterval(()=>{if(!document.hidden)refresh()},5000)}catch(e){note('Tidak dapat membuka panel: '+e.message)}}
+ async function refresh(){if(busy||!overlay.classList.contains('open')||!authorized)return;busy=true;try{
+ const rows=await fvgChatApi('fvg_chat_messages?select=user_id,sender,body,created_at&order=created_at.desc&limit=500');
+ const ids=[...new Set(rows.map(r=>r.user_id))];if(selected&&!ids.includes(selected))selected=null;if(!selected&&ids.length)selected=ids[0];
+ users.replaceChildren();for(const id of ids){const latest=rows.find(r=>r.user_id===id);const b=document.createElement('button');b.type='button';b.className=id===selected?'selected':'';b.textContent='Pelanggan '+id.slice(0,8)+' · '+(latest?.body||'').slice(0,45);b.addEventListener('click',()=>{selected=id;refresh()});users.append(b)}
+ messages.replaceChildren();const chat=rows.filter(r=>r.user_id===selected).reverse();for(const m of chat){const b=document.createElement('div');b.className='fvg85Bubble'+(m.sender==='admin'?' admin':'');b.textContent=m.body;const sm=document.createElement('small');sm.textContent=(m.sender==='admin'?'Admin':'Pelanggan')+' · '+new Date(m.created_at).toLocaleString('id-ID');b.append(sm);messages.append(b)}
+ if(!ids.length){const empty=document.createElement('p');empty.textContent='Belum ada pesan pelanggan.';users.append(empty)}
+ send.disabled=!selected;note(selected?'Terhubung · '+ids.length+' percakapan · diperbarui setiap 5 detik':'Terhubung · belum ada percakapan pelanggan');
+ }catch(e){note('Gagal memuat chat: '+e.message)}finally{busy=false}}
+ entry?.addEventListener('click',function(e){e.stopImmediatePropagation();e.preventDefault();if(overlay.classList.contains('open'))close();else open()},true);
+ $('fvg85AdminClose').addEventListener('click',close);
+ overlay.addEventListener('click',e=>{if(e.target===overlay)close()});
+ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&overlay.classList.contains('open'))close()});
+ form.addEventListener('submit',async e=>{e.preventDefault();const body=input.value.trim();if(!body||!selected||!authorized)return;send.disabled=true;try{await ensureAdmin();await fvgChatApi('fvg_chat_messages',{method:'POST',body:JSON.stringify({user_id:selected,sender:'admin',body})});input.value='';await refresh()}catch(err){note('Gagal mengirim balasan: '+err.message)}finally{send.disabled=!selected}});
+})();
+</script>
+
 </body>
 </html>
