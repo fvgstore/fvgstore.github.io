@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#170c2b"><title>FVGSTORE V88 — Owner & Admin</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#10091e;color:#f7efff;font:14px system-ui,Arial,sans-serif}button,textarea{font:inherit}button{cursor:pointer}a{color:#e3c7ff;text-decoration:none}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;background:linear-gradient(115deg,#51209a,#8c30cc);border-bottom:1px solid #b78bea}.top h1{font-size:18px;margin:0}.top a{border:1px solid #ffffff70;border-radius:10px;padding:8px 10px;white-space:nowrap}.status{padding:12px 15px;background:#2c1847;color:#e8d5ff;min-height:45px;line-height:1.5}.layout{display:grid;grid-template-columns:minmax(155px,30%) 1fr;height:calc(100dvh - 120px);min-height:300px}.users{overflow-y:auto;padding:10px;background:#1a102c;border-right:1px solid #65468b}.users button{display:block;width:100%;text-align:left;margin-bottom:8px;background:#35234f;border:1px solid #725494;color:white;padding:11px;border-radius:10px;overflow-wrap:anywhere}.users button.active{background:#7040ac;border-color:#dfbaff}.conversation{display:flex;flex-direction:column;min-width:0;min-height:0}.messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px}.bubble{max-width:88%;align-self:flex-start;background:#382550;border-radius:12px;padding:11px;white-space:pre-wrap;overflow-wrap:anywhere}.bubble.admin{align-self:flex-end;background:#7139b7}.bubble small{display:block;font-size:10px;opacity:.75;margin-top:5px}.reply{display:flex;gap:8px;padding:10px;border-top:1px solid #705093;background:#211336}.reply textarea{flex:1;min-width:0;resize:vertical;min-height:48px;max-height:130px;background:#10091e;color:white;border:1px solid #8255ad;border-radius:10px;padding:10px}.reply button,.refresh{background:#8542d0;color:white;border:0;border-radius:10px;padding:10px 14px;font-weight:700}.reply button:disabled{opacity:.45}.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:8px 12px;background:#211336}.hint{font-size:12px;color:#c6b2df}@media(max-width:600px){.top h1{font-size:15px}.layout{grid-template-columns:37% 63%;height:calc(100dvh - 155px)}.users{padding:6px}.users button{font-size:11px;padding:8px}.messages{padding:8px}.bubble{font-size:12px}.reply{padding:7px}.reply button{padding:8px}.top{padding:12px}}
+
+/* V87: tampilan panel admin ringkas dan responsif */
+.top{min-height:68px;padding:14px 18px}
+.top h1{display:flex;align-items:center;gap:11px;font-size:clamp(18px,4.5vw,24px);font-weight:800}
+.top .headset{width:29px;height:29px;flex:none;stroke:#fff;filter:drop-shadow(0 0 5px #d9a5ff)}
+.top a{display:grid;place-items:center;width:40px;height:40px;flex:none;padding:0;border-radius:12px;color:white}
+.top a svg{width:22px;height:22px;stroke:currentColor}
+.status{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:13px 15px;background:#2c1847;min-height:60px}
+.status .state-icon{display:grid;place-items:center;width:20px;height:20px;flex:none;border-radius:50%;color:#fff}
+.status .state-icon svg{width:14px;height:14px;stroke:currentColor;stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.status.ok .state-icon{background:#0ecb4e}.status.fail .state-icon{background:#f02d35}
+.status .state-label{font-size:clamp(15px,4vw,20px);font-weight:800;color:#fff}
+.status .state-detail{flex-basis:100%;font-size:13px;color:#e8d5ff;margin-left:29px}
+.actions{padding:10px 14px;align-items:flex-start;flex-direction:column;gap:8px}
+.refresh{font-size:12px;padding:8px 12px;border-radius:9px;min-height:35px}
+.hint{font-size:12px}
+@media(max-width:600px){.top{padding:12px 14px}.top h1{font-size:18px}.top .headset{width:26px;height:26px}.top a{width:38px;height:38px}.layout{height:calc(100dvh - 205px)}}
+
+/* V88 owner foundation */
+.v88-shell{padding:15px;max-width:1150px;margin:auto}.v88-nav{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.v88-nav button,.v88-card button{background:#442167;border:1px solid #9d67db;color:#fff;border-radius:10px;padding:10px 14px}.v88-nav button[aria-pressed=true]{background:#7c3aed}.v88-panel{border:1px solid #7946aa;background:#241436;border-radius:16px;padding:17px;margin-bottom:12px}.v88-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}.v88-card{background:#301b49;border:1px solid #67458b;border-radius:13px;padding:14px}.v88-card strong{display:block;font-size:22px;margin-top:5px}.v88-muted{color:#d5bde9;font-size:12px}.v88-form{display:grid;gap:10px;max-width:480px}.v88-form input{width:100%;padding:12px;background:#150b27;color:#fff;border:1px solid #8c59c0;border-radius:10px}.v88-form label{display:grid;gap:5px}.v88-hidden{display:none!important}.v88-msg{white-space:pre-wrap;color:#fcdca2}.v88-staff{padding:10px;border-bottom:1px solid #ffffff25;overflow-wrap:anywhere}.v88-staff small{color:#d6bfe8}.v88-notice{border-left:3px solid #c084fc;padding:9px 12px;background:#44205b5c;margin:12px 0;font-size:13px}.v88-chat-title{font-weight:800;margin:0 0 8px}
+</style></head><body>
+<header class="top"><h1><svg class="headset" viewBox="0 0 24 24" fill="none" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 13v-2a9 9 0 0 1 18 0v2"/><rect x="2" y="12" width="4" height="8" rx="2"/><rect x="18" y="12" width="4" height="8" rx="2"/><path d="M20 20c0 2-3 3-6 3h-2"/><rect x="9" y="21" width="4" height="2" rx="1"/></svg>Khusus Admin</h1><a href="./" aria-label="Kembali ke FVGSTORE" title="Kembali"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg></a></header>
+<div class="v88-shell" id="v88Shell" hidden>
+ <div class="v88-panel"><div class="v88-muted">FVGSTORE • V88 (tahap awal)</div><h2 id="v88Welcome" style="margin:5px 0">Memeriksa akun...</h2><div class="v88-nav"><button id="v88Home" type="button" aria-pressed="true">👑 Ringkasan</button><button id="v88Chat" type="button" aria-pressed="false">🎧 Live Chat</button><button id="v88Staff" type="button" aria-pressed="false">👥 Karyawan</button></div><div class="v88-notice">Versi uji: antrean eksklusif, izin karyawan lanjutan, status online, dan penutupan otomatis belum aktif. Jangan gunakan sebagai sistem multi-admin produksi.</div></div>
+ <section id="v88HomePanel" class="v88-panel"><h3>Ringkasan Dashboard</h3><div class="v88-grid"><div class="v88-card">Peran<strong id="v88Role">—</strong></div><div class="v88-card">Status akun<strong id="v88Active">—</strong></div><div class="v88-card">Karyawan terdaftar<strong id="v88Count">—</strong></div></div><p class="v88-muted">Jumlah karyawan berasal dari tabel fvg_staff, bukan statistik aktivitas real-time.</p></section>
+ <section id="v88StaffPanel" class="v88-panel v88-hidden"><h3>Manajemen Karyawan</h3><p class="v88-muted">Pembuatan akun menggunakan Edge Function owner-fvg. Akun baru dibuat nonaktif sampai fitur aktivasi aman tersedia.</p><form id="v88Create" class="v88-form"><label>Email karyawan<input id="v88Email" type="email" autocomplete="off" required></label><label>Password awal (minimal 12 karakter)<input id="v88Password" type="password" minlength="12" autocomplete="new-password" required></label><button type="submit">+ Buat akun nonaktif</button></form><p id="v88Result" class="v88-msg" role="status"></p><h4>Daftar akun</h4><div id="v88StaffList">Memuat...</div></section>
+</div>
+<div class="status" id="status" role="status" aria-live="polite">Menghubungkan ke Supabase...</div>
+<div class="actions"><button class="refresh" id="refresh" type="button">↻ Muat ulang</button><span class="hint">Balasan diperiksa setiap 5 detik · Riwayat 10 hari</span></div>
+<h3 id="v88ChatHeading" class="v88-chat-title v88-shell v88-hidden">🎧 Live Chat</h3><main class="layout" id="v88ChatLayout"><aside class="users" id="users" aria-label="Daftar pelanggan"></aside><section class="conversation"><div class="messages" id="messages" aria-live="polite"><p>Pilih percakapan pelanggan.</p></div><form class="reply" id="reply"><textarea id="message" maxlength="2000" placeholder="Balas pelanggan..." aria-label="Pesan balasan admin"></textarea><button id="send" type="submit" disabled>Kirim</button></form></section></main>
+<script>
+(()=>{'use strict';
+const URL='https://hzzemxlhzvhssqlgdiuz.supabase.co';
+const $=id=>document.getElementById(id), status=$('status'), users=$('users'), messages=$('messages'), send=$('send'), input=$('message');
+let session=null,selected=null,loading=false,authorized=false,role=null,staffRows=[];
+function note(text,kind='loading',detail=''){
+ status.className='status '+kind;
+ status.replaceChildren();
+ if(kind==='ok'||kind==='fail'){
+  const icon=document.createElement('span');icon.className='state-icon';icon.setAttribute('aria-hidden','true');
+  icon.innerHTML=kind==='ok'?'<svg viewBox="0 0 24 24"><path d="m5 12 5 5L19 7"/></svg>':'<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+  const label=document.createElement('strong');label.className='state-label';label.textContent=kind==='ok'?'Berhasil terhubung':'Gagal terhubung';
+  status.append(icon,label);
+  if(detail){const p=document.createElement('span');p.className='state-detail';p.textContent=detail;status.append(p)}
+ }else{status.textContent=text}
+}
+function key(){try{return localStorage.getItem('fvgstore_supabase_publishable')||''}catch{return''}}
+function stored(){try{return JSON.parse(localStorage.getItem('fvgstore_customer_session_v1')||'null')}catch{return null}}
+function save(data){session=data;try{localStorage.setItem('fvgstore_customer_session_v1',JSON.stringify(data))}catch{}}
+async function renew(){
+ const old=stored();if(!old?.refresh_token)throw Error('Belum login. Kembali ke FVGSTORE dan login dahulu.');
+ if(!key())throw Error('Publishable Key kosong. Atur di halaman FVGSTORE dahulu.');
+ const res=await fetch(URL+'/auth/v1/token?grant_type=refresh_token',{method:'POST',headers:{apikey:key(),'Content-Type':'application/json'},body:JSON.stringify({refresh_token:old.refresh_token})});
+ const data=await res.json().catch(()=>({}));if(!res.ok||!data.access_token)throw Error('Sesi login berakhir. Silakan login kembali melalui FVGSTORE.');save(data);
+}
+async function api(path,options={}){
+ if(!session?.access_token)throw Error('Sesi login tidak tersedia.');
+ const res=await fetch(URL+'/rest/v1/'+path,{...options,headers:{apikey:key(),Authorization:'Bearer '+session.access_token,...(options.body?{'Content-Type':'application/json',Prefer:'return=minimal'}:{}),...(options.headers||{})}});
+ if(!res.ok){const data=await res.json().catch(()=>({}));throw Error(data.message||data.hint||'HTTP '+res.status)}
+ return res.status===204?[]:res.json();
+}
+async function authorize(){
+ await renew();
+ if(!session?.user?.id)throw Error('Sesi tidak memiliki identitas pengguna. Silakan login ulang.');
+ const rows=await api('fvg_staff?select=user_id,role,is_active,permissions&user_id=eq.'+encodeURIComponent(session.user.id));
+ const me=Array.isArray(rows)?rows.find(r=>r.user_id===session.user.id):null;
+ if(!me||!me.is_active||!['owner','admin'].includes(me.role))throw Error('Akun tidak memiliki akses staf aktif.');
+ role=me.role;
+ const chatAllowed=role==='owner'||me.permissions?.live_chat===true;
+ const members=chatAllowed?await api('fvg_chat_admins?select=user_id&user_id=eq.'+encodeURIComponent(session.user.id)):[];
+ authorized=chatAllowed&&Array.isArray(members)&&members.some(r=>r.user_id===session.user.id);
+ $('v88Shell').hidden=false;
+ $('v88Welcome').textContent=role==='owner'?'👑 Dashboard Owner':'🎧 Dashboard Admin Karyawan';
+ $('v88Role').textContent=role==='owner'?'Owner':'Admin';$('v88Active').textContent='Aktif';
+ $('v88Staff').classList.toggle('v88-hidden',role!=='owner');
+ if(role==='owner')await loadStaff();
+ if(!authorized){$('v88Chat').disabled=true;$('v88Chat').title='Akses Live Chat belum diberikan atau belum terdaftar di fvg_chat_admins';}
+ showSection('home');
+}
+function showSection(which){
+ if(which==='staff'&&role!=='owner')return;
+ if(which==='chat'&&!authorized)return;
+ for(const name of ['home','chat','staff']){
+  const b=$('v88'+name[0].toUpperCase()+name.slice(1));
+  b.setAttribute('aria-pressed',String(name===which));
+ }
+ $('v88HomePanel').classList.toggle('v88-hidden',which!=='home');
+ $('v88StaffPanel').classList.toggle('v88-hidden',which!=='staff');
+ $('v88ChatLayout').classList.toggle('v88-hidden',which!=='chat');
+ $('v88ChatHeading').classList.toggle('v88-hidden',which!=='chat');
+ $('status').classList.toggle('v88-hidden',which!=='chat');
+ document.querySelector('.actions').classList.toggle('v88-hidden',which!=='chat');
+}
+async function loadStaff(){
+ try{
+  staffRows=await api('fvg_staff?select=user_id,role,is_active,permissions,created_at&order=created_at.asc');
+  $('v88Count').textContent=String(staffRows.filter(r=>r.role==='admin').length);
+  const list=$('v88StaffList');list.replaceChildren();
+  for(const r of staffRows){const el=document.createElement('div');el.className='v88-staff';
+   const name=document.createElement('strong');name.textContent=r.role==='owner'?'👑 Owner':'🎧 Admin';
+   const meta=document.createElement('small');meta.textContent=' • '+(r.is_active?'Aktif':'Nonaktif')+' • ID: '+r.user_id;
+   el.append(name,meta);list.append(el)}
+  if(!staffRows.length)list.textContent='Belum ada akun staf.';
+ }catch(e){$('v88StaffList').textContent='Gagal memuat daftar: '+e.message}
+}
+for(const name of ['Home','Chat','Staff'])$('v88'+name).addEventListener('click',()=>showSection(name.toLowerCase()));
+$('v88Create').addEventListener('submit',async e=>{
+ e.preventDefault();if(role!=='owner')return;
+ const button=$('v88Create').querySelector('button');button.disabled=true;
+ $('v88Result').textContent='Membuat akun...';
+ try{
+  const r=await fetch(URL+'/functions/v1/owner-fvg',{method:'POST',headers:{apikey:key(),Authorization:'Bearer '+session.access_token,'Content-Type':'application/json'},body:JSON.stringify({action:'create_staff',email:$('v88Email').value.trim(),password:$('v88Password').value})});
+  const d=await r.json().catch(()=>({}));if(!r.ok||!d.success)throw Error(d.error||'Gagal membuat akun');
+  $('v88Result').textContent=d.message||'Akun nonaktif berhasil dibuat.';$('v88Create').reset();await loadStaff();
+ }catch(err){$('v88Result').textContent='Gagal: '+err.message}finally{button.disabled=false}
+});
+function render(rows){
+ const ids=[...new Set(rows.map(r=>r.user_id))];if(selected&&!ids.includes(selected))selected=null;if(!selected&&ids.length)selected=ids[0];
+ users.replaceChildren();for(const id of ids){const last=rows.find(r=>r.user_id===id);const b=document.createElement('button');b.type='button';b.className=id===selected?'active':'';b.textContent='Pelanggan '+id.slice(0,8)+' · '+(last?.body||'').slice(0,40);b.addEventListener('click',()=>{selected=id;render(rows)});users.append(b)}
+ if(!ids.length){const p=document.createElement('p');p.textContent='Belum ada pesan pelanggan.';users.append(p)}
+ messages.replaceChildren();for(const m of rows.filter(r=>r.user_id===selected).reverse()){
+  const b=document.createElement('div');b.className='bubble'+(m.sender==='admin'?' admin':'');b.textContent=m.body;
+  const sm=document.createElement('small');sm.textContent=(m.sender==='admin'?'Admin':'Pelanggan')+' · '+new Date(m.created_at).toLocaleString('id-ID');b.append(sm);messages.append(b);
+ }
+ if(!selected){const p=document.createElement('p');p.textContent='Belum ada percakapan. Pesan pelanggan akan muncul di sini.';messages.append(p)}
+ messages.scrollTop=messages.scrollHeight;send.disabled=!selected;
+ note('', 'ok');
+}
+async function refresh(){if(loading||!authorized)return;loading=true;try{
+ const rows=await api('fvg_chat_messages?select=user_id,sender,body,created_at&created_at=gt.'+encodeURIComponent(new Date(Date.now()-10*86400000).toISOString())+'&order=created_at.desc&limit=500');render(rows)
+}catch(e){note('', 'fail', 'Gagal memuat pesan: '+e.message)}finally{loading=false}}
+$('refresh').addEventListener('click',refresh);
+$('reply').addEventListener('submit',async e=>{e.preventDefault();const body=input.value.trim();if(!body||!selected||!authorized)return;send.disabled=true;try{await api('fvg_chat_messages',{method:'POST',body:JSON.stringify({user_id:selected,sender:'admin',body})});input.value='';await refresh()}catch(e){note('', 'fail', 'Gagal mengirim balasan: '+e.message)}finally{send.disabled=!selected}});
+(async()=>{try{await authorize();if(authorized)await refresh();setInterval(()=>{if(!document.hidden)refresh()},5000)}catch(e){const msg=String(e?.message||'');note('', 'fail', /Belum login|Sesi login berakhir|Sesi login tidak tersedia/i.test(msg)?'Silakan login untuk menghubungkan':msg)}})();
+})();
+</script></body></html>
