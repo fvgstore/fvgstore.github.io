@@ -1,20 +1,188 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Masuk / Daftar — FVGSTORE V84</title><style>
-*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(circle at 20% 10%,#6828a955,transparent 60%),#10051f;color:#f7f0ff;font:15px system-ui,Arial,sans-serif}header{padding:17px 20px;border-bottom:1px solid #ffffff24;background:#160a2a}a{color:#d8b4fe;text-decoration:none}.wrap{max-width:460px;margin:30px auto;padding:0 16px}.panel{background:#211034;border:1px solid #9d5fe377;border-radius:20px;padding:24px;box-shadow:0 20px 55px #0007}h1{font-size:24px;margin:0 0 8px}p{color:#c8b5dd;line-height:1.6}.tabs{display:flex;gap:8px;margin:20px 0}.tabs button{flex:1}.tabs button.active{background:#873ce0}button{border:1px solid #8b5cf6;border-radius:11px;background:#382052;color:white;padding:12px;font:inherit;font-weight:700;cursor:pointer}label{display:block;margin:13px 0 6px}input{display:block;width:100%;background:#100a20;border:1px solid #8152b0;border-radius:10px;color:white;padding:13px;font:inherit}.primary{width:100%;margin-top:20px;background:linear-gradient(110deg,#7c3aed,#a855f7)}.secondary{width:100%;margin-top:10px;background:transparent}#status{white-space:pre-wrap;min-height:22px;font-size:13px;color:#fde68a;margin-top:14px}#member{display:none}button:disabled{opacity:.5}
-</style></head><body><header><a href="index.html">← Kembali ke FVGSTORE💎</a></header><main class="wrap"><section class="panel"><h1>Akun FVGSTORE 💎</h1><p>Masuk atau buat akun untuk menggunakan layanan pelanggan.</p><div id="guest"><div class="tabs"><button id="tabLogin" type="button" class="active">Masuk</button><button id="tabSignup" type="button">Daftar</button></div><form id="form"><label for="email">Email</label><input id="email" type="email" autocomplete="email" required placeholder="nama@email.com"><label for="password">Password (minimal 6 karakter)</label><input id="password" type="password" autocomplete="current-password" minlength="6" required placeholder="Masukkan password"><button class="primary" id="submit" type="submit">Masuk</button></form><button class="secondary" id="reset" type="button">Lupa password?</button></div><div id="member"><p>Sudah masuk sebagai <strong id="memberEmail"></strong></p><a href="index.html">Kembali ke website</a><button class="secondary" id="logout" type="button">Keluar</button></div><div id="status" role="status" aria-live="polite"></div></section></main><script>
+<!DOCTYPE html>
+
+<html lang="id"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Masuk &amp; Daftar | FVGSTORE</title><style>
+:root{color-scheme:dark;--ink:#f9f5ff;--muted:#c2b1d6;--stroke:#684587;--violet:#9c4eff}
+*{box-sizing:border-box}html{min-height:100%}body{margin:0;min-height:100dvh;color:var(--ink);font:15px system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:radial-gradient(ellipse at 50% -20%,#6821b87a,transparent 60%),radial-gradient(circle at 100% 85%,#4c196e70,transparent 50%),#0d0719}
+body:before{content:'';position:fixed;inset:0;pointer-events:none;opacity:.16;background-image:radial-gradient(#c78cff 0.7px,transparent .7px);background-size:25px 25px}
+a{color:#e0c4ff;text-decoration:none}a:hover{text-decoration:underline}header{position:relative;z-index:1;max-width:1020px;margin:auto;padding:22px 22px;display:flex;justify-content:space-between;align-items:center;gap:12px}.back{display:inline-flex;gap:8px;align-items:center;color:#dcc5f3;font-size:13px;font-weight:650}.brand{font-weight:900;letter-spacing:1.1px;font-size:15px}.brand b{color:#d98dff}.wrap{position:relative;z-index:1;max-width:490px;margin:25px auto 60px;padding:0 16px}.panel{position:relative;overflow:hidden;background:linear-gradient(160deg,#27133eeb,#170e29f5 68%);border:1px solid #8754ad99;border-radius:26px;padding:30px;box-shadow:0 25px 75px #0009,0 0 65px #7c32bc22}.panel:before{content:'';position:absolute;top:0;left:18%;right:18%;height:2px;background:linear-gradient(90deg,transparent,#e6a9ff,transparent)}.hero{text-align:center;margin-bottom:25px}.emblem{width:66px;height:66px;display:grid;place-items:center;margin:0 auto 15px;border:1px solid #c383ff70;border-radius:20px;background:linear-gradient(145deg,#7d30ce,#42126b);font-size:32px;box-shadow:0 12px 32px #7b2fce55}.eyebrow{font-size:10px;font-weight:800;letter-spacing:2.5px;color:#d6a8ff;margin-bottom:8px}h1{font-size:27px;letter-spacing:-.6px;margin:0 0 7px}p{color:var(--muted);line-height:1.6;margin:0}.tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:25px 0 23px;padding:5px;border-radius:14px;background:#12091f;border:1px solid #573478}.tabs button{width:100%;border:0;background:transparent;color:#c8b6da;padding:12px;border-radius:10px}.tabs button.active{color:#fff;background:linear-gradient(115deg,#7130c3,#a24dea);box-shadow:0 5px 18px #6e29bc55}button{border:1px solid #8655b2;border-radius:12px;background:#39234f;color:white;padding:13px;font:inherit;font-weight:750;cursor:pointer;transition:filter .2s,transform .2s}button:active{transform:scale(.99)}button:hover{filter:brightness(1.13)}button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid #d69dff;outline-offset:3px}label{display:block;margin:17px 0 8px;font-size:13px;font-weight:650;color:#e7d9f7}.fieldwrap{position:relative}.fieldwrap .symbol{position:absolute;top:50%;left:14px;transform:translateY(-50%);opacity:.8;pointer-events:none}.fieldwrap input{padding-left:42px}input{display:block;width:100%;background:#11091f;border:1px solid #64417f;border-radius:12px;color:#fff;padding:14px;font:inherit;outline:none;min-height:51px}input::placeholder{color:#8f7ba5}input:focus{border-color:#bc7bff;box-shadow:0 0 0 3px #a756ff22}.password-wrap input{padding-right:83px}.show-password{position:absolute;right:6px;top:50%;transform:translateY(-50%);background:transparent;border:0;font-size:12px;color:#d9b4fc;padding:10px}.show-password:active{transform:translateY(-50%)}.primary{width:100%;margin-top:25px;background:linear-gradient(110deg,#7836e1,#b257f4);border:1px solid #bd76ff;min-height:52px;box-shadow:0 10px 24px #762ac055}.secondary{width:100%;margin-top:12px;background:transparent;border:1px solid #654481;color:#e6d2fa}.divider{display:flex;gap:12px;align-items:center;color:#927fa8;font-size:11px;margin:21px 0 8px}.divider:before,.divider:after{content:'';height:1px;background:#54376b;flex:1}.secure{display:flex;align-items:center;justify-content:center;gap:7px;font-size:11px;color:#bda8d1;margin-top:22px;text-align:center}#status{white-space:pre-wrap;min-height:22px;font-size:13px;color:#fde68a;margin-top:15px;line-height:1.5}#member{display:none;text-align:center}#member p{margin-bottom:16px}#member a{display:block;padding:13px;background:#4c2478;border-radius:12px;font-weight:700}button:disabled{opacity:.5;cursor:wait}.foot{text-align:center;color:#8d7aa4;font-size:11px;margin-top:20px}@media(max-width:520px){header{padding:19px 17px}.wrap{margin:8px auto 30px}.panel{padding:25px 21px;border-radius:22px}h1{font-size:25px}.hero{margin-bottom:15px}}@media(prefers-reduced-motion:reduce){button{transition:none}}
+.back{width:39px;height:39px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #8954b7;border-radius:12px;background:#28143f;color:#f4e3ff;box-shadow:0 4px 16px #0003;flex-shrink:0}.back:hover{text-decoration:none;background:#3a2055}.eyebrow{font-size:clamp(15px,4.3vw,21px);letter-spacing:1px;line-height:1.45;margin:10px auto 13px;color:#e6ccff;font-weight:900}.welcome-brand{white-space:nowrap;letter-spacing:.35px;color:#fff}.welcome-brand b{color:#d98dff}.welcome-brand .diamond{font-size:.88em;vertical-align:1px}.hero p{font-size:13px;line-height:1.6;max-width:310px;margin:auto}.hero{margin-bottom:17px}.emblem{margin-bottom:17px}@media(max-width:370px){.eyebrow{font-size:14px;letter-spacing:0}.brand{font-size:13px}}
+
+/* Revisi: hanya tombol kembali di header, tanpa ikon berlian besar */
+header{justify-content:flex-start!important}.hero{padding-top:5px!important}.eyebrow{margin-top:0!important}
+
+/* Persetujuan khusus pendaftaran */
+.signup-consent{display:none;margin:19px 0 0;padding:13px 12px;border:1px solid #684587;border-radius:12px;background:#170d28}
+.signup-consent.visible{display:flex;align-items:flex-start;gap:10px}
+.signup-consent input[type="checkbox"]{width:19px;height:19px;min-height:19px;flex:0 0 19px;margin:2px 0 0;accent-color:#a855f7;cursor:pointer}
+.signup-consent label{display:block;margin:0;font-size:12.5px;line-height:1.6;font-weight:500;color:#e9ddf6;cursor:pointer}
+.signup-consent a{color:#d9a4ff;text-decoration:underline;text-underline-offset:2px;font-weight:700}
+
+.google-login{display:block;width:100%;margin-top:12px;background:#fff;color:#252033;border:1px solid #ddd7e7;min-height:50px}
+.google-login:hover{background:#f1e9fa}
+.phone-note{font-size:11px;text-align:center;margin-top:13px;color:#bda8d1}
+#signupConsent:not(.visible){display:none}
+/* Nomor HP: satu bingkai saja, tanpa outline fokus ganda */
+.phone-otp-row #phone:focus,.phone-otp-row #phone:focus-visible{outline:none;outline-offset:0;box-shadow:none;border-color:#64417f}
+/* OTP WhatsApp: hanya tab Daftar */
+.phone-otp-row{display:flex;align-items:center;gap:8px}.phone-otp-row .fieldwrap{flex:1;min-width:0}.otp-send{flex:0 0 auto;white-space:nowrap;padding:13px 12px;min-height:51px;background:linear-gradient(110deg,#7836e1,#b257f4);border:1px solid #bd76ff;border-radius:12px;box-shadow:0 5px 17px #762ac055}.otp-send[hidden],.otp-area[hidden],.otp-feedback[hidden]{display:none!important}.otp-feedback{font-size:11px;color:#c9b2d9;margin:8px 0 0;line-height:1.5}.otp-feedback.error{color:#ffb9c8}.otp-area{margin-top:4px}.otp-result{display:flex;align-items:center;gap:9px;padding:12px;border-radius:12px;margin-top:12px;font-size:13px;font-weight:700}.otp-result[hidden]{display:none}.otp-result.ok{color:#c0f6dd;background:#173c31;border:1px solid #3cba8a}.otp-result.bad{color:#ffd3dd;background:#421e30;border:1px solid #d46b84}.otp-result svg{width:21px;height:21px;flex-shrink:0}.otp-result.ok svg{color:#66e5ac}.otp-result.bad svg{color:#ff8ea3}
+
+/* Penyempurnaan V95: logo Google, keamanan dengan animasi lembut */
+.google-login{display:flex;align-items:center;justify-content:center;gap:10px}
+.google-mark{flex-shrink:0;display:block}
+.security-shield{display:inline-flex;align-items:center;justify-content:center;position:relative;flex-shrink:0;font-size:23px;line-height:1.25;transform-origin:center;animation:fvg-shield-float 2.5s ease-in-out infinite;filter:drop-shadow(0 0 3px #b878fa)}
+@keyframes fvg-shield-float{0%,100%{transform:translateY(0) scale(1);filter:drop-shadow(0 0 2px #b878fa)}50%{transform:translateY(-4px) scale(1.12);filter:drop-shadow(0 0 12px #b878fa)}}
+@media(prefers-reduced-motion:reduce){.security-shield{animation:none}}
+</style></head><body><header><a aria-label="Kembali ke toko" class="back" href="index.html" title="Kembali ke toko"><svg aria-hidden="true" fill="none" height="23" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" viewbox="0 0 24 24" width="23"><path d="M19 12H5m7-7-7 7 7 7"></path></svg></a></header><main class="wrap"><section class="panel"><div class="hero"><div class="eyebrow">WELCOME TO <span class="welcome-brand">FVG<b>STORE</b> </span></div><p>Masuk atau daftar untuk pengalaman top up<br/>yang lebih praktis dan nyaman.</p></div><div id="guest"><div class="tabs"><button class="active" id="tabLogin" type="button">Masuk</button><button id="tabSignup" type="button">Daftar</button></div><form id="form"><label for="phone">Nomor HP</label><div class="phone-otp-row"><div class="fieldwrap"><span aria-hidden="true" class="symbol">☎</span><input autocomplete="tel" id="phone" inputmode="tel" pattern="(?:\+62|62|0)8[0-9]{8,12}" placeholder="081234567890" required="" type="tel"/></div><button class="otp-send" id="sendOtp" type="button" hidden>Kirim OTP</button></div><p class="otp-feedback" id="otpFeedback" aria-live="polite" hidden></p><div class="otp-area" id="otpArea" hidden><label for="otpCode">Kode Verifikasi</label><input id="otpCode" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="Masukkan 6 digit kode"/><div class="otp-result ok" id="otpSuccess" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="m7 12 3.5 3.5L17 9"/></svg>Verifikasi Berhasil!</div><div class="otp-result bad" id="otpFailure" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="m9 9 6 6m0-6-6 6"/></svg>Verifikasi Gagal!</div></div><label for="password">Password (minimal 6 karakter)</label><div class="fieldwrap password-wrap"><span aria-hidden="true" class="symbol">♢</span><input autocomplete="current-password" id="password" minlength="6" placeholder="Masukkan password" required="" type="password"/><button aria-label="Tampilkan password" aria-pressed="false" class="show-password" id="showPassword" type="button">Lihat</button></div><div class="signup-consent" id="signupConsent"><input disabled="" id="agreeTerms" required="" type="checkbox"/><label for="agreeTerms">Dengan mendaftar, Anda setuju dengan <a href="syarat-ketentuan.html" rel="noopener noreferrer" target="_blank">Syarat &amp; Ketentuan</a> kami.</label></div><button class="primary" id="submit" type="submit">Masuk</button></form><div class="divider">ATAU</div><button class="google-login" id="googleLogin" type="button"><svg class="google-mark" aria-hidden="true" viewBox="0 0 48 48" width="22" height="22"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.27 5.48-4.8 7.18l7.73 6C44.38 38.03 46.98 31.88 46.98 24.55z"/><path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.2A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.87-5.8l-7.73-6c-2.14 1.44-4.88 2.3-8.14 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.97 6.19C6.51 42.62 14.62 48 24 48z"/></svg><span>Lanjutkan dengan Google</span></button><div class="secure"><span class="security-shield" aria-hidden="true">🛡️</span><span>Privasi &amp; keamanan akun anda prioritas kami</span></div></div><div id="member"><p>Sudah masuk sebagai <strong id="memberEmail"></strong></p><a href="index.html">Kembali ke website</a><button class="secondary" id="logout" type="button">Keluar</button></div><div aria-live="polite" id="status" role="status"></div></section><div class="foot">© FVGSTORE</div></main><script>
 'use strict';
 const URL='https://hzzemxlhzvhssqlgdiuz.supabase.co';
-const KEY_STORAGE='fvgstore_supabase_publishable';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_IYZIoaFw9sMaNrF-fTSEzw_aH7awn-I';
 const SESSION_STORAGE='fvgstore_customer_session_v1';
 const $=id=>document.getElementById(id);
 let mode='login';
+let otpVerifiedPhone='';
+let otpRequestId='';
 function status(t){$('status').textContent=t}
-function key(){try{return localStorage.getItem(KEY_STORAGE)||''}catch{return ''}}
-function tab(m){mode=m;$('tabLogin').classList.toggle('active',m==='login');$('tabSignup').classList.toggle('active',m==='signup');$('submit').textContent=m==='login'?'Masuk':'Daftar';$('password').autocomplete=m==='login'?'current-password':'new-password';status('')}
-async function request(path,body,token){const k=key();if(!k)throw Error('Publishable Key belum tersimpan di website GitHub ini. Buka Pengaturan Supabase pada halaman utama, isi key, lalu Simpan.');const r=await fetch(URL+'/auth/v1/'+path,{method:'POST',headers:{'Content-Type':'application/json',apikey:k,...(token?{Authorization:'Bearer '+token}:{})},body:JSON.stringify(body)});const d=await r.json().catch(()=>({}));if(!r.ok)throw Error(d.msg||d.error_description||d.message||d.error||'Gagal ('+r.status+')');return d}
-function render(data){const logged=!!data?.user;$('guest').style.display=logged?'none':'block';$('member').style.display=logged?'block':'none';$('memberEmail').textContent=logged?data.user.email||'Pengguna':''}
-$('tabLogin').onclick=()=>tab('login');$('tabSignup').onclick=()=>tab('signup');
-$('form').onsubmit=async e=>{e.preventDefault();const b=$('submit');b.disabled=true;status('Menghubungkan ke Supabase...');try{const email=$('email').value.trim(),password=$('password').value;const d=await request(mode==='login'?'token?grant_type=password':'signup',{email,password});if(d.access_token&&d.refresh_token&&d.user){localStorage.setItem(SESSION_STORAGE,JSON.stringify(d));render(d);status('Berhasil masuk! Silakan kembali ke FVGSTORE.')}else{status('Pendaftaran diterima. Jika verifikasi email diaktifkan, periksa email untuk konfirmasi sebelum masuk.')}}catch(err){status(err.message)}finally{b.disabled=false}};
-$('reset').onclick=async()=>{const email=$('email').value.trim();if(!email){status('Isi email terlebih dahulu.');return}try{await request('recover',{email});status('Jika email terdaftar, tautan pemulihan akan dikirim.')}catch(err){status(err.message)}};
-$('logout').onclick=async()=>{let d=null;try{d=JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null')}catch{}try{if(d?.access_token)await request('logout',{},d.access_token)}catch{}localStorage.removeItem(SESSION_STORAGE);render(null);status('Sudah keluar dari akun.')};
+function key(){return SUPABASE_PUBLISHABLE_KEY}
+function phoneNumber(raw){
+  let v=raw.replace(/[\s()-]/g,'');
+  if(v.startsWith('0'))v='+62'+v.slice(1);
+  else if(v.startsWith('62'))v='+'+v;
+  if(!/^\+628\d{8,12}$/.test(v))throw Error('Masukkan nomor HP Indonesia yang valid, misalnya 081234567890.');
+  return v;
+}
+function tab(m){
+  mode=m;
+  $('tabLogin').classList.toggle('active',m==='login');
+  $('tabSignup').classList.toggle('active',m==='signup');
+  $('submit').textContent=m==='login'?'Masuk':'Daftar';
+  $('password').autocomplete=m==='login'?'current-password':'new-password';
+  $('signupConsent').classList.toggle('visible',m==='signup');
+  updateOtpVisibility();
+  $('agreeTerms').disabled=m!=='signup';
+  $('agreeTerms').required=m==='signup';
+  status('');
+}
+function updateOtpVisibility(){
+  let valid=false;try{phoneNumber($('phone').value.trim());valid=true}catch{}
+  const show=mode==='signup'&&valid;
+  $('sendOtp').hidden=!show; $('otpArea').hidden=!show;
+  if(!show){$('otpFeedback').hidden=true;$('otpSuccess').hidden=true;$('otpFailure').hidden=true}
+}
+function clearOtp(){
+  otpVerifiedPhone='';otpRequestId='';$('otpCode').value='';
+  $('otpFeedback').hidden=true;$('otpFeedback').classList.remove('error');
+  $('otpSuccess').hidden=true;$('otpFailure').hidden=true;
+}
+$('phone').addEventListener('input',()=>{clearOtp();updateOtpVisibility()});
+$('otpCode').addEventListener('input',()=>{
+  const input=$('otpCode');input.value=input.value.replace(/\D/g,'').slice(0,6);
+  otpVerifiedPhone='';$('otpSuccess').hidden=true;$('otpFailure').hidden=true;
+  if(input.value.length===6)verifyOtp();
+});
+async function otpFunction(name,payload){
+  const k=key();if(!k)throw Error('Pengaturan Supabase belum tersedia.');
+  const response=await fetch(URL+'/functions/v1/'+name,{method:'POST',headers:{'Content-Type':'application/json',apikey:k},body:JSON.stringify(payload)});
+  const result=await response.json().catch(()=>({}));
+  if(!response.ok||result.success===false)throw Error(result.message||result.error||'Layanan OTP WhatsApp belum tersedia. Hubungi admin FVGSTORE.');
+  return result;
+}
+$('sendOtp').onclick=async()=>{
+  const btn=$('sendOtp');btn.disabled=true;clearOtp();
+  const notice=$('otpFeedback');notice.hidden=false;notice.textContent='Memproses permintaan OTP...';
+  try{
+    const phone=phoneNumber($('phone').value.trim());
+    const result=await otpFunction('send-whatsapp-otp',{phone});
+    if(!result.request_id)throw Error('Server OTP belum memberikan ID permintaan.');
+    otpRequestId=result.request_id;
+    notice.textContent='Berhasil, kode verifikasi akan dikirim ke WhatsApp Anda.';
+  }catch(err){notice.classList.add('error');notice.textContent=err.message}
+  finally{btn.disabled=false}
+};
+async function verifyOtp(){
+  if(mode!=='signup'||!otpRequestId)return;
+  const phone=phoneNumber($('phone').value.trim());
+  const code=$('otpCode').value;if(!/^\d{6}$/.test(code))return;
+  $('otpSuccess').hidden=true;$('otpFailure').hidden=true;
+  try{
+    const result=await otpFunction('verify-whatsapp-otp',{phone,code,request_id:otpRequestId});
+    if(result.verified!==true)throw Error('Kode tidak cocok.');
+    otpVerifiedPhone=phone;$('otpSuccess').hidden=false;
+  }catch(err){otpVerifiedPhone='';$('otpFailure').hidden=false}
+}
+async function request(path,body,token){
+  const k=key();
+  if(!k)throw Error('Konfigurasi Supabase belum tersedia.');
+  const r=await fetch(URL+'/auth/v1/'+path,{
+    method:'POST',
+    headers:{'Content-Type':'application/json',apikey:k,...(token?{Authorization:'Bearer '+token}:{})},
+    body:JSON.stringify(body)
+  });
+  const d=await r.json().catch(()=>({}));
+  if(!r.ok)throw Error(d.msg||d.error_description||d.message||d.error||'Gagal ('+r.status+')');
+  return d;
+}
+function render(data){
+  const logged=!!data?.user;
+  $('guest').style.display=logged?'none':'block';
+  $('member').style.display=logged?'block':'none';
+  $('memberEmail').textContent=logged?(data.user.email||data.user.phone||'Pengguna'):'';
+}
+$('showPassword').onclick=()=>{
+  const p=$('password'),show=p.type==='password';
+  p.type=show?'text':'password';
+  $('showPassword').textContent=show?'Tutup':'Lihat';
+  $('showPassword').setAttribute('aria-pressed',String(show));
+  $('showPassword').setAttribute('aria-label',show?'Sembunyikan password':'Tampilkan password');
+};
+$('tabLogin').onclick=()=>tab('login');
+$('tabSignup').onclick=()=>tab('signup');
+$('form').onsubmit=async e=>{
+  e.preventDefault();
+  if(mode==='signup'&&!$('agreeTerms').checked){
+    status('Centang persetujuan Syarat & Ketentuan sebelum mendaftar.');return;
+  }
+  const b=$('submit');b.disabled=true;status('Menghubungkan ke Supabase...');
+  try{
+    const phone=phoneNumber($('phone').value.trim()),password=$('password').value;
+    if(mode==='signup'&&otpVerifiedPhone!==phone)throw Error('Verifikasi nomor WhatsApp terlebih dahulu sebelum mendaftar.');
+    const d=await request(mode==='login'?'token?grant_type=password':'signup',{phone,password});
+    if(d.access_token&&d.refresh_token&&d.user){
+      localStorage.setItem(SESSION_STORAGE,JSON.stringify(d));render(d);
+      status('Berhasil masuk! Silakan kembali ke FVGSTORE.');
+    }else{
+      status('Pendaftaran diterima. Ikuti konfirmasi akun sesuai pengaturan Supabase.');
+    }
+  }catch(err){status(err.message)}finally{b.disabled=false}
+};
+$('googleLogin').onclick=()=>{
+  if(!key()){status('Konfigurasi Supabase belum tersedia.');return}
+  const redirect=location.origin+location.pathname;
+  location.assign(URL+'/auth/v1/authorize?provider=google&redirect_to='+encodeURIComponent(redirect));
+};
+async function handleGoogleCallback(){
+  const h=new URLSearchParams(location.hash.replace(/^#/,''));
+  const err=h.get('error_description')||h.get('error');
+  if(err){status('Login Google gagal: '+err);history.replaceState(null,'',location.pathname+location.search);return}
+  const access_token=h.get('access_token'),refresh_token=h.get('refresh_token');
+  if(!access_token||!refresh_token)return;
+  history.replaceState(null,'',location.pathname+location.search);
+  try{
+    const k=key();
+    if(!k)throw Error('Publishable Key Supabase tidak ditemukan setelah kembali dari Google.');
+    const r=await fetch(URL+'/auth/v1/user',{headers:{apikey:k,Authorization:'Bearer '+access_token}});
+    const user=await r.json();
+    if(!r.ok)throw Error(user.message||'Gagal mengambil akun Google.');
+    const d={access_token,refresh_token,user,token_type:'bearer',expires_in:Number(h.get('expires_in')||3600)};
+    localStorage.setItem(SESSION_STORAGE,JSON.stringify(d));render(d);
+    status('Berhasil masuk dengan Google!');
+  }catch(err){status(err.message)}
+}
+$('logout').onclick=async()=>{
+  let d=null;try{d=JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null')}catch{}
+  try{if(d?.access_token)await request('logout',{},d.access_token)}catch{}
+  localStorage.removeItem(SESSION_STORAGE);render(null);status('Sudah keluar dari akun.');
+};
 try{render(JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null'))}catch{render(null)}
+updateOtpVisibility();
+handleGoogleCallback();
 </script></body></html>
