@@ -212,7 +212,7 @@ function render(data){
   document.body.classList.toggle('account-active',logged);
   if(logged){
     const u=data.user, meta=u.user_metadata||{};
-    const id=meta.account_id||meta.customer_id||'Belum tersedia';
+    const id='Memuat...';
     const phone=u.phone||meta.phone||'Belum ditambahkan';
     const email=u.email||'Belum ditambahkan';
     $('accountId').textContent=id;$('accountPhone').textContent=phone;$('accountEmail').textContent=email;
@@ -220,6 +220,41 @@ function render(data){
     $('detailJoined').textContent=u.created_at?new Date(u.created_at).toLocaleDateString('id-ID'):'Belum tersedia';
     $('detailMethod').textContent=(u.app_metadata?.provider==='google')?'Google':'Nomor HP / Password';
     showAccountPage('accountHome');
+    loadAccountId(data);
+  }
+}
+async function loadAccountId(data){
+  const userId=data?.user?.id;
+  if(!userId)return;
+  const setId=value=>{
+    const current=JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null');
+    if(current?.user?.id!==userId)return;
+    $('accountId').textContent=value;
+    $('detailId').textContent=value;
+  };
+  try{
+    let token=data.access_token;
+    if(!token)throw Error('Sesi login tidak memiliki token akses. Silakan masuk kembali.');
+    let response=await fetch(URL+'/rest/v1/fvg_account_ids?select=account_id&user_id=eq.'+encodeURIComponent(userId)+'&limit=1',{
+      headers:{apikey:key(),Authorization:'Bearer '+token,Accept:'application/json'}
+    });
+    if(response.status===401&&data.refresh_token){
+      const refreshed=await request('token?grant_type=refresh_token',{refresh_token:data.refresh_token});
+      if(!refreshed.access_token)throw Error('Sesi berakhir. Silakan masuk kembali.');
+      const updated={...data,...refreshed,user:refreshed.user||data.user};
+      localStorage.setItem(SESSION_STORAGE,JSON.stringify(updated));
+      token=updated.access_token;
+      response=await fetch(URL+'/rest/v1/fvg_account_ids?select=account_id&user_id=eq.'+encodeURIComponent(userId)+'&limit=1',{
+        headers:{apikey:key(),Authorization:'Bearer '+token,Accept:'application/json'}
+      });
+    }
+    const rows=await response.json().catch(()=>null);
+    if(!response.ok)throw Error(rows?.message||'Tidak dapat membaca ID Akun dari Supabase.');
+    if(!Array.isArray(rows))throw Error('Respons ID Akun tidak valid.');
+    setId(rows[0]?.account_id||'Belum tersedia');
+  }catch(error){
+    setId('Belum tersedia');
+    status('ID Akun belum dapat dimuat: '+error.message);
   }
 }
 function showAccountPage(id){
@@ -231,7 +266,7 @@ $('openAccountDetail').onclick=()=>showAccountPage('accountDetail');
 $('detailBack').onclick=()=>showAccountPage('accountHome');
 $('copyAccountId').onclick=async()=>{
   const v=$('detailId').textContent;
-  if(v==='Belum tersedia')return;
+  if(v==='Belum tersedia'||v==='Memuat...')return;
   try{await navigator.clipboard.writeText(v);$('copyAccountId').textContent='Disalin'}catch{status('Tidak dapat menyalin ID akun.')}
 };
 $('accountTopup').onclick=()=>status('Halaman Top Up saldo belum terhubung di file login ini.');
