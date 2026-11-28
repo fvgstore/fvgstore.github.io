@@ -95,7 +95,7 @@ body.account-active .panel:before,body.account-active .hero,body.account-active 
         <div class="info-line"><span class="info-icon">✉</span><strong>Email</strong><span id="accountEmail">—</span></div>
       </div>
     </div>
-    <div class="balance-area"><h2>TOTAL SALDO</h2><div class="balance-line"><span class="gem"><svg viewBox="0 0 64 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M12 4H52L62 19L32 53L2 19Z"/><path d="M2 19H62M12 4L22 19L32 53L42 19L52 4M22 19L32 4L42 19"/></svg></span><span class="balance-divider"></span><span id="accountBalance" title="Tampilan awal; data saldo belum terhubung">0 IDR</span></div></div>
+    <div class="balance-area"><h2>TOTAL SALDO</h2><div class="balance-line"><span class="gem"><svg viewBox="0 0 64 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M12 4H52L62 19L32 53L2 19Z"/><path d="M2 19H62M12 4L22 19L32 53L42 19L52 4M22 19L32 4L42 19"/></svg></span><span class="balance-divider"></span><span id="accountBalance" title="Saldo dari Supabase">Memuat...</span></div></div>
     <div class="account-actions">
       <button class="account-tile" type="button" id="accountTopup"><span class="tile-icon"><svg viewBox="0 0 64 56" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M12 4H52L62 19L32 53L2 19Z"/><path d="M2 19H62M12 4L22 19L32 53L42 19L52 4M22 19L32 4L42 19"/></svg></span><span class="tile-divider"></span><span class="tile-label">Top Up ›</span></button>
       <button class="account-tile" type="button" id="accountHistory"><span class="tile-icon"><svg viewBox="0 0 64 64" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="8" width="38" height="48" rx="4"/><path d="M21 8V4H37V8M18 22H40M18 30H34M18 38H30"/><circle cx="46" cy="46" r="15" fill="#25002e"/><path d="M46 37V46L52 50"/></svg></span><span class="tile-divider"></span><span class="tile-label">Riwayat<br>Transaksi</span></button>
@@ -116,7 +116,7 @@ body.account-active .panel:before,body.account-active .hero,body.account-active 
     <section class="account-section"><h3>Data Akun</h3><div class="account-data-row"><span>Tanggal bergabung</span><span id="detailJoined">—</span></div><div class="account-data-row"><span>Total transaksi</span><span>Belum terhubung</span></div><div class="account-data-row"><span>Total top up</span><span>Belum terhubung</span></div></section>
     <div class="account-footer">© 2026 FVGSTORE💎 . All Rights Reserved</div>
   </div>
-</div><div aria-live="polite" id="status" role="status"></div></section><div class="foot">© FVGSTORE</div></main><script>
+<div id="accountTopupPage" class="account-page" hidden><button class="account-back" type="button" id="topupBack"><span>↶</span><i></i>Top Up Saldo</button><div class="balance-area"><h2>Total Saldo</h2><div class="balance-line"><span class="gem">◇</span><span id="topupBalance">Memuat...</span></div></div><label for="topupAmount">Masukan Nominal Top Up</label><input id="topupAmount" type="number" min="1" step="1" placeholder="Rp 50.000"><div id="quickAmounts" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0"></div><section class="account-section"><h3>Metode Pembayaran</h3><p>Belum ada metode pembayaran tersedia.</p></section><button class="primary" disabled>Lanjutkan Pembayaran</button></div><div id="accountHistoryPage" class="account-page" hidden><button class="account-back" type="button" id="historyBack"><span>↶</span><i></i>Riwayat Transaksi</button><div style="display:flex;gap:5px;flex-wrap:wrap" id="historyFilters"><button data-filter="all">Semua</button><button data-filter="in">Saldo Masuk</button><button data-filter="out">Saldo Keluar</button></div><div id="historyRows" aria-live="polite"></div><button class="secondary" id="historyRefresh">Segarkan</button></div></div><div aria-live="polite" id="status" role="status"></div></section><div class="foot">© FVGSTORE</div></main><script>
 'use strict';
 const URL='https://hzzemxlhzvhssqlgdiuz.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_IYZIoaFw9sMaNrF-fTSEzw_aH7awn-I';
@@ -221,7 +221,7 @@ function render(data){
     $('detailJoined').textContent=u.created_at?new Date(u.created_at).toLocaleDateString('id-ID'):'Belum tersedia';
     $('detailMethod').textContent=(u.app_metadata?.provider==='google')?'Google':'Nomor HP / Password';
     showAccountPage('accountHome');
-    loadAccountId(data);
+    loadAccountId(data).finally(()=>loadWallet());
     checkOwnerAccess(data);
   }
 }
@@ -275,6 +275,8 @@ async function loadAccountId(data){
 function showAccountPage(id){
   $('accountHome').hidden=id!=='accountHome';
   $('accountDetail').hidden=id!=='accountDetail';
+  $('accountTopupPage').hidden=id!=='accountTopupPage';
+  $('accountHistoryPage').hidden=id!=='accountHistoryPage';
 }
 $('accountBack').onclick=()=>{location.href='index.html'};
 $('openAccountDetail').onclick=()=>showAccountPage('accountDetail');
@@ -284,8 +286,18 @@ $('copyAccountId').onclick=async()=>{
   if(v==='Belum tersedia'||v==='Memuat...')return;
   try{await navigator.clipboard.writeText(v);$('copyAccountId').textContent='Disalin'}catch{status('Tidak dapat menyalin ID akun.')}
 };
-$('accountTopup').onclick=()=>status('Halaman Top Up saldo belum terhubung di file login ini.');
-$('accountHistory').onclick=()=>status('Riwayat transaksi belum terhubung di file login ini.');
+let historyFilter='all', historyData=[];
+const idr=n=>Number(n).toLocaleString('id-ID')+' IDR';
+async function walletRead(table,query){const s=JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null');if(!s?.user?.id||!s.access_token)throw Error('Silakan masuk kembali');const r=await fetch(URL+'/rest/v1/'+table+'?user_id=eq.'+encodeURIComponent(s.user.id)+'&'+query,{headers:{apikey:key(),Authorization:'Bearer '+s.access_token}});const rows=await r.json();if(!r.ok)throw Error(rows.message||'Gagal membaca data');if(JSON.parse(localStorage.getItem(SESSION_STORAGE)||'null')?.user?.id!==s.user.id)throw Error('Sesi berubah');return rows;}
+async function loadWallet(){for(const id of ['accountBalance','topupBalance'])$(id).textContent='Memuat...';try{const rows=await walletRead('fvg_wallets','select=balance&limit=1');if(!rows.length)throw Error('Wallet belum tersedia');for(const id of ['accountBalance','topupBalance'])$(id).textContent=idr(rows[0].balance);}catch(e){for(const id of ['accountBalance','topupBalance'])$(id).textContent='Tidak tersedia';}}
+function renderHistory(){const el=$('historyRows');el.replaceChildren();for(const x of historyData){const delta=Number(x.balance_after)-Number(x.balance_before);if(historyFilter==='in'&&delta<=0||historyFilter==='out'&&delta>=0)continue;const item=document.createElement('section');item.className='account-section';const row=document.createElement('div');row.style.cssText='display:flex;justify-content:space-between;gap:8px';const name=document.createElement('strong');name.textContent=x.description||(delta>0?'Saldo Masuk':'Saldo Keluar');const amount=document.createElement('strong');amount.style.color=delta>=0?'#4ade80':'#ff879c';amount.textContent=(delta>0?'+':'')+idr(delta);row.append(name,amount);const date=document.createElement('p');date.textContent=new Date(x.created_at).toLocaleString('id-ID');item.append(row,date);el.append(item);}if(!el.children.length)el.textContent='Belum ada transaksi';}
+async function loadHistory(){historyData=[];$('historyRows').textContent='Memuat...';try{historyData=await walletRead('fvg_transactions','select=description,balance_before,balance_after,created_at&order=created_at.desc&limit=100');renderHistory();}catch(e){$('historyRows').textContent='Gagal memuat: '+e.message;}}
+for(const n of [10000,20000,50000,100000,200000,500000]){const b=document.createElement('button');b.type='button';b.style.padding='9px 3px';b.textContent='Rp '+n.toLocaleString('id-ID');b.onclick=()=>{$('topupAmount').value=n;};$('quickAmounts').append(b);}
+$('accountTopup').onclick=()=>{status('');showAccountPage('accountTopupPage');loadWallet();};
+$('accountHistory').onclick=()=>{status('');showAccountPage('accountHistoryPage');loadHistory();};
+$('topupBack').onclick=$('historyBack').onclick=()=>{showAccountPage('accountHome');loadWallet();};
+$('historyRefresh').onclick=loadHistory;
+$('historyFilters').onclick=e=>{if(e.target.dataset.filter){historyFilter=e.target.dataset.filter;renderHistory();}};
 $('showPassword').onclick=()=>{
   const p=$('password'),show=p.type==='password';
   p.type=show?'text':'password';
